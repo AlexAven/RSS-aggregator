@@ -11,6 +11,11 @@ const config = {
       statements: 80,
     },
   },
+  moduleNameMapper: {
+    '\\.(css|scss)$': 'jest-transform-stub',
+  },
+  // Установка среды тестирования на jsdom
+  testEnvironment: 'jsdom',
 };
 
 module.exports = config;

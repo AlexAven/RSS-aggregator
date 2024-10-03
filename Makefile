@@ -8,10 +8,10 @@ build:
 	NODE_ENV=production npx webpack
 
 test:
-	npx jest --coverage
+	NODE_NO_WARNINGS=1 npx jest --coverage
 
 test-watch:
-	npx jest --watch --coverage false
+	NODE_NO_WARNINGS=1 npx jest --watch --coverage false
 
 lint:
 	npx eslint .
