@@ -1,5 +1,5 @@
-import './styles.scss';
 import 'bootstrap';
+import './styles/style.scss';
 
 const testing = (string) => string.toLowerCase();
 
