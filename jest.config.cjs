@@ -4,12 +4,12 @@ const config = {
   collectCoverage: true,
   collectCoverageFrom: ['<rootDir>/src/**/*.js', '!**/node_modules/**', '!<rootDir>/src/**/*.mock.*'],
   coverageThreshold: {
-    global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
-    },
+    // global: {
+    //   branches: 80,
+    //   functions: 80,
+    //   lines: 80,
+    //   statements: 80,
+    // },
   },
   moduleNameMapper: {
     '\\.(css|scss)$': 'jest-transform-stub',

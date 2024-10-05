@@ -1,10 +1,6 @@
 import 'bootstrap';
+
 import './styles/style.scss';
-
-const testing = (string) => string.toLowerCase();
-
-const foo = 'xxx';
-
-testing(foo);
-
-export default testing;
+import './scripts/model.js';
+import './scripts/view.js';
+import './scripts/controller.js';
