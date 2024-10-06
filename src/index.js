@@ -4,3 +4,4 @@ import './styles/style.scss';
 import './scripts/model.js';
 import './scripts/view.js';
 import './scripts/controller.js';
+import './scripts/validator.js';

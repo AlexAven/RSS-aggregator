@@ -1,6 +1,8 @@
 import * as yup from 'yup';
 import state from './model.js';
 
+import view from './view.js';
+
 const formSchema = yup
   .string()
   .url('Некорректная ссылка')
@@ -10,7 +12,17 @@ const formSchema = yup
 const validateURL = (url) =>
   formSchema
     .validate(url)
-    .then(() => ({ valid: true, message: '' }))
-    .catch((error) => ({ valid: false, message: error.message }));
+    .then(() => {
+      view.watchedValidation.valid = true;
+      view.watchedValidation.message = 'корректно';
+
+      // return { valid: true, message: '' };
+    })
+    .catch((error) => {
+      view.watchedValidation.valid = false;
+      view.watchedValidation.message = error.message;
+
+      // return { valid: false, message: error.message };
+    });
 
 export default validateURL;
