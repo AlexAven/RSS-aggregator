@@ -1,7 +1,6 @@
 import 'bootstrap';
 
 import './styles/style.scss';
-import './scripts/model.js';
-import './scripts/view.js';
-import './scripts/controller.js';
-import './scripts/validator.js';
+import app from './scripts/app.js';
+
+app();

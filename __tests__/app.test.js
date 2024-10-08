@@ -1,9 +1,15 @@
-import validateURL from '../src/scripts/validator.js';
-import state from '../src/scripts/model.js';
+import { state, validateURL } from '../src/scripts/app.js';
 
-jest.mock('../src/scripts/model.js', () => ({
+jest.mock('../src/scripts/app.js', () => ({
   feeds: [],
   posts: [],
+  uiState: {
+    language: 'ru',
+    validate: {
+      isValid: null,
+      message: null,
+    },
+  },
 }));
 
 describe('validateURL testing', () => {
@@ -27,6 +33,6 @@ describe('validateURL testing', () => {
     const result = await validateURL(url);
 
     expect(result.valid).toBeFalsy();
-    expect(result.message).toBe('Этот RSS уже был добавлен');
+    expect(result.message).toBe('Данная RSS ссылка уже была добавлена');
   });
 });
