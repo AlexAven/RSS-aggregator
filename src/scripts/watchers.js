@@ -3,17 +3,14 @@ const feedback = document.querySelector('.feedback');
 
 function renderValidation(path, value, i18nInstance) {
   if (path === 'isValid') {
-    if (value) {
-      input.classList.remove('is-invalid');
-      feedback.classList.remove('text-danger');
-      input.classList.add('is-valid');
-      feedback.classList.add('text-success');
-    } else {
-      input.classList.remove('is-valid');
-      feedback.classList.remove('text-success');
-      input.classList.add('is-invalid');
-      feedback.classList.add('text-danger');
-    }
+    const isValidClass = value ? 'is-valid' : 'is-invalid';
+    const feedbackClass = value ? 'text-success' : 'text-danger';
+
+    input.classList.remove('is-valid', 'is-invalid');
+    feedback.classList.remove('text-success', 'text-danger');
+
+    input.classList.add(isValidClass);
+    feedback.classList.add(feedbackClass);
   }
   feedback.textContent = i18nInstance.t(`feedback.${value}`);
 }
