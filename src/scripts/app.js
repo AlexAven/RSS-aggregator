@@ -6,7 +6,7 @@ import i18next from 'i18next';
 import axios from 'axios';
 
 import resources from '../locales/languages.js';
-import { renderValidation, renderLanguage } from './watchers.js';
+import { renderValidation, renderLanguage, renderFeed } from './watchers.js';
 
 export default () => {
   const defaultLanguage = 'ru';
@@ -36,7 +36,7 @@ export default () => {
   const watchedValidation = onChange(state.uiState.validate, (path, value) =>
     renderValidation(path, value, i18nInstance),
   );
-  // const watchedLanguage = onChange(state.uiState, renderLanguage);
+  const watchedState = onChange(state, (path, value) => renderFeed(path, value, i18nInstance));
   const form = document.querySelector('.rss-form');
   const input = document.querySelector('#url-input');
 
@@ -50,7 +50,8 @@ export default () => {
       },
     };
     setLocale(customMessages);
-    const formSchema = yup.string().url().notOneOf(state.feeds);
+    const urlsInState = state.feeds.map((feed) => feed.url);
+    const formSchema = yup.string().url().notOneOf(urlsInState);
 
     return formSchema
       .validate(url)
@@ -59,7 +60,6 @@ export default () => {
       })
       .then(() => ({ isValid: true }))
       .catch((error) => {
-        console.log(error.message);
         watchedValidation.isValid = false;
         watchedValidation.message = error.message;
 
@@ -79,6 +79,18 @@ export default () => {
     axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}`).then((response) => {
       try {
         const data = rssParce(response.data.contents);
+        const id = 1;
+        const feedTitle = data.querySelector('channel > title').textContent;
+        const feedDescription = data.querySelector('channel > description').textContent;
+        const posts = data.querySelectorAll('channel > item');
+
+        watchedState.feeds.push({ url, id, title: feedTitle, description: feedDescription });
+        posts.forEach((post) => {
+          const postLink = post.querySelector('link').textContent;
+          const postTitle = post.querySelector('title').textContent;
+
+          watchedState.posts.push({ feedId: id, postTitle, postLink });
+        });
         watchedValidation.isValid = true;
         watchedValidation.message = 'success';
         console.log('Распарсенные данные', data);
@@ -94,11 +106,7 @@ export default () => {
     event.preventDefault();
     const url = input.value.trim();
 
-    validateURL(url).then((result) => {
-      if (result.isValid) {
-        state.feeds.push(url);
-      }
-    });
+    validateURL(url);
   }
   form.addEventListener('submit', validateForm);
 };
