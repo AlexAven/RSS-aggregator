@@ -1,7 +1,9 @@
+/* eslint-disable no-use-before-define */
 import * as yup from 'yup';
 import { setLocale } from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
+import axios from 'axios';
 
 import resources from '../locales/languages.js';
 import { renderValidation, renderLanguage } from './watchers.js';
@@ -53,19 +55,40 @@ export default () => {
     return formSchema
       .validate(url)
       .then(() => {
-        watchedValidation.isValid = true;
-        watchedValidation.message = 'success';
-
-        return { isValid: true };
+        getFeedData(url);
       })
+      .then(() => ({ isValid: true }))
       .catch((error) => {
+        console.log(error.message);
         watchedValidation.isValid = false;
         watchedValidation.message = error.message;
-        console.log(state.uiState.validate.message);
 
         return { isValid: false };
       });
   };
+
+  function rssParce(xmlData) {
+    const parser = new DOMParser();
+    const data = parser.parseFromString(xmlData, 'text/xml');
+    console.log('Внутри парсера - ок');
+
+    return data;
+  }
+
+  function getFeedData(url) {
+    axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}`).then((response) => {
+      try {
+        const data = rssParce(response.data.contents);
+        watchedValidation.isValid = true;
+        watchedValidation.message = 'success';
+        console.log('Распарсенные данные', data);
+      } catch {
+        watchedValidation.isValid = false;
+        watchedValidation.message = 'invalidUrl';
+        console.log('Распарсить не удалось');
+      }
+    });
+  }
 
   function validateForm(event) {
     event.preventDefault();
@@ -73,7 +96,7 @@ export default () => {
 
     validateURL(url).then((result) => {
       if (result.isValid) {
-        state.feeds.push(url); // делаем axios запрос и пушим в стек нужные данные
+        state.feeds.push(url);
       }
     });
   }

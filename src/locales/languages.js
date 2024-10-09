@@ -7,9 +7,8 @@ const resources = {
       label: 'Вставьте сюда RSS-ссылку',
       feedback: {
         success: 'RSS успешно добавлен',
-        invalidUrl: 'Некорректная ссылка',
+        invalidUrl: 'Ссылка не содержит корректный RSS',
         rssAlreadyAdded: 'Данная RSS ссылка уже была добавлена',
-        invalidRss: 'Не удается загрузить RSS',
       },
     },
   },
