@@ -1,4 +1,5 @@
 /* eslint-disable no-use-before-define */
+import { nanoid } from 'nanoid';
 import * as yup from 'yup';
 import { setLocale } from 'yup';
 import onChange from 'on-change';
@@ -49,6 +50,7 @@ export default () => {
         url: 'invalidUrl',
       },
     };
+
     setLocale(customMessages);
     const urlsInState = state.feeds.map((feed) => feed.url);
     const formSchema = yup.string().url().notOneOf(urlsInState);
@@ -58,12 +60,9 @@ export default () => {
       .then(() => {
         getFeedData(url);
       })
-      .then(() => ({ isValid: true }))
       .catch((error) => {
         watchedValidation.isValid = false;
         watchedValidation.message = error.message;
-
-        return { isValid: false };
       });
   };
 
@@ -79,7 +78,7 @@ export default () => {
     axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}`).then((response) => {
       try {
         const data = rssParce(response.data.contents);
-        const id = 1;
+        const id = nanoid(6);
         const feedTitle = data.querySelector('channel > title').textContent;
         const feedDescription = data.querySelector('channel > description').textContent;
         const posts = data.querySelectorAll('channel > item');
@@ -104,9 +103,14 @@ export default () => {
 
   function validateForm(event) {
     event.preventDefault();
+    const submitBtn = event.target.querySelector('button');
     const url = input.value.trim();
 
-    validateURL(url);
+    submitBtn.classList.add('disabled');
+
+    validateURL(url).finally(() => {
+      submitBtn.classList.remove('disabled');
+    });
   }
   form.addEventListener('submit', validateForm);
 };

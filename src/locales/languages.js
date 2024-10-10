@@ -10,6 +10,11 @@ const resources = {
         invalidUrl: 'Ссылка не содержит корректный RSS',
         rssAlreadyAdded: 'Данная RSS ссылка уже была добавлена',
       },
+      rss: {
+        feeds: 'Фиды',
+        posts: 'Посты',
+        linkBtn: 'Перейти',
+      },
     },
   },
 };
