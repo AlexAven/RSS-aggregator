@@ -28,36 +28,40 @@ function renderLanguage(i18nInstance) {
   button.textContent = i18nInstance.t('button');
 }
 
-function renderFeed(path, value, i18nInstance) {
-  console.log('Путь', path);
-  console.log('Значение', value);
+function renderRss(path, value, i18nInstance) {
+  console.log('Текущий путь:', path);
+  console.log('Значение:', value);
   const feedsContainer = document.querySelector('.feeds');
   const postsContainer = document.querySelector('.posts');
 
-  if (feedsContainer && postsContainer) {
-    feedsContainer.innerHTML =
-      '<div class="card-body"><h2 class="card-title h4">Фиды</h2></div><ul class="list-group border-0 rounded-0"></ul>';
-    postsContainer.innerHTML =
-      '<div class="card border-0"><div class="card-body"><h2 class="card-title h4">Посты</h2></div><ul class="list-group border-0 rounded-0"></ul></div>';
+  feedsContainer.innerHTML =
+    '<div class="card-body"><h2 class="card-title h4">Фиды</h2></div><ul class="list-group border-0 rounded-0"></ul>';
+  postsContainer.innerHTML =
+    '<div class="card border-0"><div class="card-body"><h2 class="card-title h4">Посты</h2></div><ul class="list-group border-0 rounded-0"></ul></div>';
 
-    const feedsList = feedsContainer.querySelector('ul');
-    const postList = postsContainer.querySelector('ul');
+  const feedsList = feedsContainer.querySelector('ul');
+  const postList = postsContainer.querySelector('ul');
+  // console.log(feedsList);
 
-    if (path === 'feeds') {
+  if (path === 'feeds') {
+    value.forEach((feed) => {
+      console.log(feed);
+      console.log(feed.title);
+      console.log(feed.description);
       const listElement = document.createElement('li');
       const feedHeader = document.createElement('h3');
       const feedParagraph = document.createElement('p');
 
       listElement.classList.add('list-group-item', 'border-0', 'border-end-0');
       feedHeader.classList.add('h6', 'm-0');
-      feedHeader.textContent = value.title;
+      feedHeader.textContent = feed.title;
       feedParagraph.classList.add('m-0', 'small', 'text-black-50');
-      feedParagraph.textContent = value.description;
+      feedParagraph.textContent = feed.description;
       listElement.append(feedHeader, feedParagraph);
       feedsList.append(listElement);
-      console.log(feedsContainer);
-    }
+    });
   }
+
   // const feedTitle = value.querySelector('channel').querySelector('title').textContent;
   // const feedDescription = data.querySelector('channel').querySelector('description').textContent;
   // const posts = data.querySelector('channel').querySelectorAll('item');
@@ -68,4 +72,4 @@ function renderFeed(path, value, i18nInstance) {
   // const postLink = data.querySelector('channel').querySelector('item').querySelector('link').textContent;
 }
 
-export { renderValidation, renderLanguage, renderFeed };
+export { renderValidation, renderLanguage, renderRss };

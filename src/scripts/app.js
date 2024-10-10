@@ -6,7 +6,7 @@ import i18next from 'i18next';
 import axios from 'axios';
 
 import resources from '../locales/languages.js';
-import { renderValidation, renderLanguage, renderFeed } from './watchers.js';
+import { renderValidation, renderLanguage, renderRss } from './watchers.js';
 
 export default () => {
   const defaultLanguage = 'ru';
@@ -36,7 +36,7 @@ export default () => {
   const watchedValidation = onChange(state.uiState.validate, (path, value) =>
     renderValidation(path, value, i18nInstance),
   );
-  const watchedState = onChange(state, (path, value) => renderFeed(path, value, i18nInstance));
+  const watchedState = onChange(state, (path, value) => renderRss(path, value, i18nInstance));
   const form = document.querySelector('.rss-form');
   const input = document.querySelector('#url-input');
 
