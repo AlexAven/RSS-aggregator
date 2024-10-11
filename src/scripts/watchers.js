@@ -28,13 +28,15 @@ function renderLanguage(i18nInstance) {
   button.textContent = i18nInstance.t('button');
 }
 
-function renderRss(path, value, i18nInstance) {
+function renderRss(path, value, prevValue, i18nInstance) {
   console.log('Текущий путь:', path);
+  console.log('Предыдущее Значение:', prevValue);
   console.log('Значение:', value);
   const feedsContainer = document.querySelector('.feeds');
   const postsContainer = document.querySelector('.posts');
 
   if (path === 'feeds' && value.length < 2) {
+    console.log('Рендер шапки');
     feedsContainer.innerHTML = `<div class="card-body"><h2 class="card-title h4 fw-bold">${i18nInstance.t('rss.feeds')}</h2></div><ul class="list-group border-0 rounded-0"></ul>`;
     postsContainer.innerHTML = `<div class="card border-0"><div class="card-body"><h2 class="card-title h4 fw-bold">${i18nInstance.t('rss.posts')}</h2></div><ul class="list-group border-0 rounded-0"></ul></div>`;
   }
@@ -43,8 +45,11 @@ function renderRss(path, value, i18nInstance) {
   const postList = postsContainer.querySelector('ul');
 
   if (path === 'feeds') {
-    feedsList.innerHTML = '';
-    value.forEach((feed) => {
+    // feedsList.innerHTML = '';
+    const feedsToRender = value.filter((feed) => !prevValue.includes(feed));
+    console.log('feedsToRender', feedsToRender);
+    // value.forEach((feed) => {
+    feedsToRender.forEach((feed) => {
       const listElement = document.createElement('li');
       const feedHeader = document.createElement('h3');
       const feedParagraph = document.createElement('p');
@@ -60,8 +65,11 @@ function renderRss(path, value, i18nInstance) {
   }
 
   if (path === 'posts') {
-    postList.innerHTML = '';
-    value.forEach((post) => {
+    // postList.innerHTML = '';
+    const postsToRender = value.filter((feed) => !prevValue.includes(feed));
+    console.log('postsToRender', postsToRender);
+    // value.forEach((post) => {
+    postsToRender.forEach((post) => {
       const listElement = document.createElement('li');
       const postName = document.createElement('a');
       const btn = document.createElement('button');

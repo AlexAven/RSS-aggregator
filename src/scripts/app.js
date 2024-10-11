@@ -37,7 +37,9 @@ export default () => {
   const watchedValidation = onChange(state.uiState.validate, (path, value) =>
     renderValidation(path, value, i18nInstance),
   );
-  const watchedState = onChange(state, (path, value) => renderRss(path, value, i18nInstance));
+  const watchedState = onChange(state, (path, value, prevValue) =>
+    renderRss(path, value, prevValue, i18nInstance),
+  );
   const form = document.querySelector('.rss-form');
   const input = document.querySelector('#url-input');
 
