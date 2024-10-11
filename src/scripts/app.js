@@ -15,7 +15,7 @@ export default () => {
   i18nInstance
     .init({
       lng: defaultLanguage,
-      debug: true,
+      debug: false,
       resources,
     })
     .then(() => {
@@ -114,5 +114,31 @@ export default () => {
       submitBtn.classList.remove('disabled');
     });
   }
+
+  function postsUpdate() {
+    state.feeds.forEach((feed) => {
+      axios
+        .get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(feed.url)}`)
+        .then((response) => {
+          try {
+            const data = rssParce(response.data.contents);
+            const posts = data.querySelectorAll('channel > item');
+            const postsList = posts.forEach((post) => {
+              const postLink = post.querySelector('link').textContent;
+              const postTitle = post.querySelector('title').textContent;
+
+              postsList.push({ feedId: feed.id, postTitle, postLink });
+            });
+            const addedPosts = postsList.filter((post) => !state.posts.includes(post));
+
+            watchedState.posts.push(addedPosts);
+          } catch {
+            console.log('Добавить посты не удалось');
+          }
+        });
+    });
+    setTimeout(postsUpdate, 5000);
+  }
+
   form.addEventListener('submit', validateForm);
 };

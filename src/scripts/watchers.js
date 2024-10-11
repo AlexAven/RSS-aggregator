@@ -94,6 +94,14 @@ function renderRss(path, value, prevValue, i18nInstance) {
       btn.setAttribute('data-bs-target', '#modal');
       btn.textContent = i18nInstance.t('rss.linkBtn');
       listElement.append(postName, btn);
+
+      const feedPostslist = postList.querySelectorAll(`li > [data-id="${post.feedId}"]`);
+
+      if (feedPostslist.length > 0) {
+        const lastElement = feedPostslist[feedPostslist.length - 1].parentElement;
+
+        lastElement.after(listElement);
+      }
       postList.append(listElement);
     });
   }
