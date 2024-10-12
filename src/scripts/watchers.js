@@ -95,14 +95,14 @@ function renderRss(path, value, prevValue, i18nInstance) {
       btn.textContent = i18nInstance.t('rss.linkBtn');
       listElement.append(postName, btn);
 
-      const feedPostslist = postList.querySelectorAll(`li > [data-id="${post.feedId}"]`);
+      const firstPost = postList.querySelector(`a[data-id="${post.feedId}"]`);
+      console.log('tvytvt!!!!!!!!!!!!', firstPost);
 
-      if (feedPostslist.length > 0) {
-        const lastElement = feedPostslist[feedPostslist.length - 1].parentElement;
-
-        lastElement.after(listElement);
+      if (firstPost) {
+        firstPost.parentElement.before(listElement);
+      } else {
+        postList.append(listElement);
       }
-      postList.append(listElement);
     });
   }
 }

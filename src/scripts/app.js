@@ -5,6 +5,7 @@ import { setLocale } from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
 import axios from 'axios';
+import _ from 'lodash';
 
 import resources from '../locales/languages.js';
 import { renderValidation, renderLanguage, renderRss } from './watchers.js';
@@ -77,30 +78,32 @@ export default () => {
   }
 
   function getFeedData(url) {
-    axios.get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(url)}`).then((response) => {
-      try {
-        const data = rssParce(response.data.contents);
-        const id = nanoid(6);
-        const feedTitle = data.querySelector('channel > title').textContent;
-        const feedDescription = data.querySelector('channel > description').textContent;
-        const posts = data.querySelectorAll('channel > item');
+    axios
+      .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
+      .then((response) => {
+        try {
+          const data = rssParce(response.data.contents);
+          const id = nanoid(6);
+          const feedTitle = data.querySelector('channel > title').textContent;
+          const feedDescription = data.querySelector('channel > description').textContent;
+          const posts = data.querySelectorAll('channel > item');
 
-        watchedState.feeds.push({ url, id, title: feedTitle, description: feedDescription });
-        posts.forEach((post) => {
-          const postLink = post.querySelector('link').textContent;
-          const postTitle = post.querySelector('title').textContent;
+          watchedState.feeds.push({ url, id, title: feedTitle, description: feedDescription });
+          posts.forEach((post) => {
+            const postLink = post.querySelector('link').textContent;
+            const postTitle = post.querySelector('title').textContent;
 
-          watchedState.posts.push({ feedId: id, postTitle, postLink });
-        });
-        watchedValidation.isValid = true;
-        watchedValidation.message = 'success';
-        console.log('Распарсенные данные', data);
-      } catch {
-        watchedValidation.isValid = false;
-        watchedValidation.message = 'invalidUrl';
-        console.log('Распарсить не удалось');
-      }
-    });
+            watchedState.posts.push({ feedId: id, postTitle, postLink });
+          });
+          watchedValidation.isValid = true;
+          watchedValidation.message = 'success';
+          console.log('Распарсенные данные', data);
+        } catch {
+          watchedValidation.isValid = false;
+          watchedValidation.message = 'invalidUrl';
+          console.log('Распарсить не удалось');
+        }
+      });
   }
 
   function validateForm(event) {
@@ -112,29 +115,38 @@ export default () => {
 
     validateURL(url).finally(() => {
       submitBtn.classList.remove('disabled');
+
+      setTimeout(postsUpdate, 5000);
     });
   }
 
   function postsUpdate() {
     state.feeds.forEach((feed) => {
       axios
-        .get(`https://allorigins.hexlet.app/get?url=${encodeURIComponent(feed.url)}`)
+        .get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(feed.url)}`)
         .then((response) => {
-          try {
-            const data = rssParce(response.data.contents);
-            const posts = data.querySelectorAll('channel > item');
-            const postsList = posts.forEach((post) => {
-              const postLink = post.querySelector('link').textContent;
-              const postTitle = post.querySelector('title').textContent;
+          const postsList = [];
+          const data = rssParce(response.data.contents);
+          console.log(data);
+          const posts = data.querySelectorAll('channel > item');
 
-              postsList.push({ feedId: feed.id, postTitle, postLink });
-            });
-            const addedPosts = postsList.filter((post) => !state.posts.includes(post));
+          posts.forEach((post) => {
+            const postLink = post.querySelector('link').textContent;
+            const postTitle = post.querySelector('title').textContent;
+            // console.log('postLink', postLink);
+            // console.log('postTitle', postTitle);
 
-            watchedState.posts.push(addedPosts);
-          } catch {
-            console.log('Добавить посты не удалось');
-          }
+            postsList.push({ feedId: feed.id, postTitle, postLink });
+            // console.log('postsList', postsList);
+          });
+
+          const currentPosts = state.posts.filter((post) => post.feedId === feed.id);
+          const addedPosts = _.differenceWith(postsList, currentPosts, _.isEqual);
+          console.log('postsList!!!!', postsList);
+          console.log('currentPosts!!!', currentPosts);
+          console.log('addedPosts!!!', addedPosts);
+
+          watchedState.posts.push(...addedPosts);
         });
     });
     setTimeout(postsUpdate, 5000);
