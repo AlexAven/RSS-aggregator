@@ -90,8 +90,8 @@ export default () => {
 
           watchedState.feeds.push({ url, id, title: feedTitle, description: feedDescription });
           posts.forEach((post) => {
-            const postLink = post.querySelector('link')?.textContent;
-            const postTitle = post.querySelector('title')?.textContent;
+            const postLink = post.querySelector('link').textContent;
+            const postTitle = post.querySelector('title').textContent;
             const postDescription = post.querySelector('description')?.textContent;
 
             watchedState.posts.push({ feedId: id, postTitle, postDescription, postLink });

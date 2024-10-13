@@ -7,17 +7,27 @@ const modalCloseBtn = document.querySelector('.modal-btn-close');
 const modalPreviewBtn = document.querySelector('.modal-btn-preview');
 
 function renderValidation(path, value, i18nInstance) {
+  const statusConfig = {
+    isValid: {
+      classes: value ? ['is-valid', 'text-success'] : ['is-invalid', 'text-danger'],
+      remove: ['is-valid', 'is-invalid', 'text-success', 'text-danger'],
+    },
+    message: {
+      text: i18nInstance.t(`feedback.${value}`),
+    },
+  };
+
+  const config = statusConfig[path];
+
+  if (!config) return;
+
   if (path === 'isValid') {
-    const isValidClass = value ? 'is-valid' : 'is-invalid';
-    const feedbackClass = value ? 'text-success' : 'text-danger';
-
-    input.classList.remove('is-valid', 'is-invalid');
-    feedback.classList.remove('text-success', 'text-danger');
-
-    input.classList.add(isValidClass);
-    feedback.classList.add(feedbackClass);
+    input.classList.remove(...config.remove);
+    input.classList.add(config.classes[0]);
+    feedback.classList.remove(...config.remove);
+    feedback.classList.add(config.classes[1]);
   } else if (path === 'message') {
-    feedback.textContent = i18nInstance.t(`feedback.${value}`);
+    feedback.textContent = config.text;
   }
 }
 
