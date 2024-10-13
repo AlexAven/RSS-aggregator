@@ -1,5 +1,10 @@
+/* eslint-disable no-use-before-define */
 const input = document.querySelector('#url-input');
 const feedback = document.querySelector('.feedback');
+const modalTitle = document.querySelector('.modal-title');
+const modalDescription = document.querySelector('.modal-body');
+const modalCloseBtn = document.querySelector('.modal-btn-close');
+const modalPreviewBtn = document.querySelector('.modal-btn-preview');
 
 function renderValidation(path, value, i18nInstance) {
   if (path === 'isValid') {
@@ -20,7 +25,7 @@ function renderLanguage(i18nInstance) {
   const header = document.querySelector('.main__header');
   const description = document.querySelector('.main__description');
   const label = document.querySelector('label');
-  const button = document.querySelector('button');
+  const button = document.querySelector('section button');
 
   header.textContent = i18nInstance.t('header');
   description.textContent = i18nInstance.t('description');
@@ -29,14 +34,10 @@ function renderLanguage(i18nInstance) {
 }
 
 function renderRss(path, value, prevValue, i18nInstance) {
-  console.log('Текущий путь:', path);
-  console.log('Предыдущее Значение:', prevValue);
-  console.log('Значение:', value);
   const feedsContainer = document.querySelector('.feeds');
   const postsContainer = document.querySelector('.posts');
 
   if (path === 'feeds' && value.length < 2) {
-    console.log('Рендер шапки');
     feedsContainer.innerHTML = `<div class="card-body"><h2 class="card-title h4 fw-bold">${i18nInstance.t('rss.feeds')}</h2></div><ul class="list-group border-0 rounded-0"></ul>`;
     postsContainer.innerHTML = `<div class="card border-0"><div class="card-body"><h2 class="card-title h4 fw-bold">${i18nInstance.t('rss.posts')}</h2></div><ul class="list-group border-0 rounded-0"></ul></div>`;
   }
@@ -45,10 +46,8 @@ function renderRss(path, value, prevValue, i18nInstance) {
   const postList = postsContainer.querySelector('ul');
 
   if (path === 'feeds') {
-    // feedsList.innerHTML = '';
     const feedsToRender = value.filter((feed) => !prevValue.includes(feed));
-    console.log('feedsToRender', feedsToRender);
-    // value.forEach((feed) => {
+
     feedsToRender.forEach((feed) => {
       const listElement = document.createElement('li');
       const feedHeader = document.createElement('h3');
@@ -65,10 +64,7 @@ function renderRss(path, value, prevValue, i18nInstance) {
   }
 
   if (path === 'posts') {
-    // postList.innerHTML = '';
     const postsToRender = value.filter((feed) => !prevValue.includes(feed));
-    console.log('postsToRender', postsToRender);
-    // value.forEach((post) => {
     postsToRender.forEach((post) => {
       const listElement = document.createElement('li');
       const postName = document.createElement('a');
@@ -95,8 +91,13 @@ function renderRss(path, value, prevValue, i18nInstance) {
       btn.textContent = i18nInstance.t('rss.linkBtn');
       listElement.append(postName, btn);
 
+      btn.addEventListener('click', (event) => renderModal(event, post, i18nInstance));
+      postName.addEventListener('click', (event) => {
+        event.target.classList.remove('fw-bold');
+        event.target.classList.add('fw-normal', 'text-secondary');
+      });
+
       const firstPost = postList.querySelector(`a[data-id="${post.feedId}"]`);
-      console.log('tvytvt!!!!!!!!!!!!', firstPost);
 
       if (firstPost) {
         firstPost.parentElement.before(listElement);
@@ -105,6 +106,22 @@ function renderRss(path, value, prevValue, i18nInstance) {
       }
     });
   }
+}
+
+function renderModal(event, currentPost, i18nInstance) {
+  const targetPost = event.target.parentElement.querySelector('a');
+
+  targetPost.classList.remove('fw-bold');
+  targetPost.classList.add('fw-normal', 'text-secondary');
+  modalCloseBtn.textContent = i18nInstance.t('modal.close');
+  modalCloseBtn.src = currentPost.postLink;
+  modalPreviewBtn.textContent = i18nInstance.t('modal.openEntire');
+  modalTitle.innerHTML = currentPost.postTitle;
+  modalDescription.innerHTML = currentPost.postDescription;
+
+  modalPreviewBtn.addEventListener('click', () => {
+    window.open(currentPost.postLink, '_blank');
+  });
 }
 
 export { renderValidation, renderLanguage, renderRss };

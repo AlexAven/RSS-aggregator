@@ -48,6 +48,7 @@ export default () => {
     const customMessages = {
       mixed: {
         notOneOf: 'rssAlreadyAdded',
+        required: 'emptyField',
       },
       string: {
         url: 'invalidUrl',
@@ -56,7 +57,7 @@ export default () => {
 
     setLocale(customMessages);
     const urlsInState = state.feeds.map((feed) => feed.url);
-    const formSchema = yup.string().url().notOneOf(urlsInState);
+    const formSchema = yup.string().required().url().notOneOf(urlsInState);
 
     return formSchema
       .validate(url)
@@ -72,7 +73,6 @@ export default () => {
   function rssParce(xmlData) {
     const parser = new DOMParser();
     const data = parser.parseFromString(xmlData, 'text/xml');
-    console.log('Внутри парсера - ок');
 
     return data;
   }
@@ -90,19 +90,24 @@ export default () => {
 
           watchedState.feeds.push({ url, id, title: feedTitle, description: feedDescription });
           posts.forEach((post) => {
-            const postLink = post.querySelector('link').textContent;
-            const postTitle = post.querySelector('title').textContent;
+            const postLink = post.querySelector('link')?.textContent;
+            const postTitle = post.querySelector('title')?.textContent;
+            const postDescription = post.querySelector('description')?.textContent;
 
-            watchedState.posts.push({ feedId: id, postTitle, postLink });
+            watchedState.posts.push({ feedId: id, postTitle, postDescription, postLink });
           });
           watchedValidation.isValid = true;
           watchedValidation.message = 'success';
-          console.log('Распарсенные данные', data);
-        } catch {
+          input.value = '';
+          input.focus();
+        } catch (error) {
           watchedValidation.isValid = false;
-          watchedValidation.message = 'invalidUrl';
-          console.log('Распарсить не удалось');
+          watchedValidation.message = 'noValidRss';
         }
+      })
+      .catch(() => {
+        watchedValidation.isValid = false;
+        watchedValidation.message = 'connectionError';
       });
   }
 
@@ -127,30 +132,23 @@ export default () => {
         .then((response) => {
           const postsList = [];
           const data = rssParce(response.data.contents);
-          console.log(data);
           const posts = data.querySelectorAll('channel > item');
 
           posts.forEach((post) => {
             const postLink = post.querySelector('link').textContent;
             const postTitle = post.querySelector('title').textContent;
-            // console.log('postLink', postLink);
-            // console.log('postTitle', postTitle);
+            const postDescription = post.querySelector('description').textContent;
 
-            postsList.push({ feedId: feed.id, postTitle, postLink });
-            // console.log('postsList', postsList);
+            postsList.push({ feedId: feed.id, postTitle, postDescription, postLink });
           });
 
           const currentPosts = state.posts.filter((post) => post.feedId === feed.id);
           const addedPosts = _.differenceWith(postsList, currentPosts, _.isEqual);
-          console.log('postsList!!!!', postsList);
-          console.log('currentPosts!!!', currentPosts);
-          console.log('addedPosts!!!', addedPosts);
 
           watchedState.posts.push(...addedPosts);
         });
     });
     setTimeout(postsUpdate, 5000);
   }
-
   form.addEventListener('submit', validateForm);
 };

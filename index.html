@@ -3,10 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/png" href="./src/assets/favicon/favicon.png">
     <title>RSS agregator project</title>
   </head>
   <body class="d-flex flex-column min-vh-100">
+    
+  <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="exampleModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary modal-btn-preview"></button>
+          <button type="button" class="btn btn-secondary modal-btn-close" data-bs-dismiss="modal"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
     <main class="main flex-grow-1">
     <section class="input container-fluid bg-dark p-5">
       <div class="row">
