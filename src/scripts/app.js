@@ -35,12 +35,13 @@ export default () => {
     },
   };
 
-  const watchedValidation = onChange(state.uiState.validate, (path, value) =>
-    renderValidation(path, value, i18nInstance),
-  );
-  const watchedState = onChange(state, (path, value, prevValue) =>
-    renderRss(path, value, prevValue, i18nInstance),
-  );
+  const watchedValidation = onChange(state.uiState.validate, (path, value) => {
+    renderValidation(path, value, i18nInstance);
+  });
+
+  const watchedState = onChange(state, (path, value, prevValue) => {
+    renderRss(path, value, prevValue, i18nInstance);
+  });
   const form = document.querySelector('.rss-form');
   const input = document.querySelector('#url-input');
 
@@ -88,13 +89,24 @@ export default () => {
           const feedDescription = data.querySelector('channel > description').textContent;
           const posts = data.querySelectorAll('channel > item');
 
-          watchedState.feeds.push({ url, id, title: feedTitle, description: feedDescription });
+          watchedState.feeds.push({
+            url,
+            id,
+            title: feedTitle,
+            description: feedDescription,
+          });
+
           posts.forEach((post) => {
             const postLink = post.querySelector('link').textContent;
             const postTitle = post.querySelector('title').textContent;
             const postDescription = post.querySelector('description')?.textContent;
 
-            watchedState.posts.push({ feedId: id, postTitle, postDescription, postLink });
+            watchedState.posts.push({
+              feedId: id,
+              postTitle,
+              postDescription,
+              postLink,
+            });
           });
           watchedValidation.isValid = true;
           watchedValidation.message = 'success';
@@ -139,7 +151,12 @@ export default () => {
             const postTitle = post.querySelector('title')?.textContent;
             const postDescription = post.querySelector('description')?.textContent;
 
-            postsList.push({ feedId: feed.id, postTitle, postDescription, postLink });
+            postsList.push({
+              feedId: feed.id,
+              postTitle,
+              postDescription,
+              postLink,
+            });
           });
 
           const currentPosts = state.posts.filter((post) => post.feedId === feed.id);
