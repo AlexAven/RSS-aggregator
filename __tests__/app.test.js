@@ -12,7 +12,7 @@ jest.mock('../src/scripts/app.js', () => ({
   },
 }));
 
-describe('validateURL testing', () => {
+describe('validateURL', () => {
   const url = 'http://ya.ru';
 
   it('should validate successfully', async () => {
