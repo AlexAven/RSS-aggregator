@@ -99,7 +99,7 @@ export default () => {
           posts.forEach((post) => {
             const postLink = post.querySelector('link').textContent;
             const postTitle = post.querySelector('title').textContent;
-            const postDescription = post.querySelector('description')?.textContent;
+            const postDescription = post.querySelector('description').textContent;
 
             watchedState.posts.push({
               feedId: id,
@@ -147,9 +147,9 @@ export default () => {
           const posts = data.querySelectorAll('channel > item');
 
           posts.forEach((post) => {
-            const postLink = post.querySelector('link')?.textContent;
-            const postTitle = post.querySelector('title')?.textContent;
-            const postDescription = post.querySelector('description')?.textContent;
+            const postLink = post.querySelector('link').textContent;
+            const postTitle = post.querySelector('title').textContent;
+            const postDescription = post.querySelector('description').textContent;
 
             postsList.push({
               feedId: feed.id,
