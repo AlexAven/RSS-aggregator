@@ -1,3 +1,14 @@
+## Project description
+RSS-aggregator - it's an applictaiont for adding valid RSS-links and auto-updating news feed.
+
+Project uses native Java Script.
+
+## Install
+
+* clone repository;
+* ``npm ci`` or  ``make install``
+* ``npx dev`` or ``make dev``
+
 ### Hexlet tests and linter status:
 
 [![Actions Status](https://github.com/AlexAven/frontend-project-11/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/AlexAven/frontend-project-11/actions)
